@@ -1,0 +1,36 @@
+version: "3.6"
+
+services:
+
+  angello:
+    image: nginx:latest
+    volumes:
+      - ./angello/client/:/usr/share/nginx/html
+    depends_on:
+      - backend
+    ports:
+      - "8000:80"
+
+  backend:
+    build: angello-express-api/
+    volumes:
+      - ./angello-express-api/:/usr/app
+    ports:
+      - "4000:4000"
+    depends_on:
+      - mongo
+    working_dir: /usr/app
+    command: ./startup.sh
+
+  mongo:
+    image: mongo:latest
+    ports:
+      - 27017:27017
+
+  angello-lite:
+    image: nginx:latest
+    volumes:
+      - ./angello-lite:/usr/share/nginx/html
+    ports:
+      - "8001:80"
+
